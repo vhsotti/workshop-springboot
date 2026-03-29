@@ -2,6 +2,10 @@ package com.educandoweb.course.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.Where;
+import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -10,16 +14,31 @@ import java.util.Set;
 
 @Entity
 @Table(name = "tb_product")
+@Where(clause = "status = true")
+
 public class Product implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank
+    @NotNull
+    @Length(min = 5, max = 100)
+    @Column(length = 100, nullable = false)
     private String name;
+
+    @NotNull
+    @NotBlank
+    @Column(length = 50, nullable = false)
     private String description;
+
     private Double price;
+
     private String imgUrl;
+
+    private boolean status;
 
     @ManyToMany
     @JoinTable(name = "tb_product_category",
@@ -39,6 +58,7 @@ public class Product implements Serializable {
         this.description = description;
         this.price = price;
         this.imgUrl = imgUrl;
+        this.status = true;
     }
 
     public Long getId() {
@@ -83,6 +103,14 @@ public class Product implements Serializable {
 
     public Set<Category> getCategories() {
         return categories;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     @JsonIgnore
